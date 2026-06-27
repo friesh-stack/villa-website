@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dünenvilla &amp; Strandvilla Thiessow · Rügen</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#f3ece0; --deep:#1c3a4b; --sea:#3a7ca5; --sea-d:#2c5f7f;
+  --dune:#c9a24b; --shell:#fbf8f2; --ink:#22303a; --line:#e2d8c8; --coral:#c0654a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--sand);color:var(--ink);line-height:1.55}
+img{max-width:100%;display:block}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px}
+
+/* HERO */
+header.hero{position:relative;background:linear-gradient(160deg,var(--deep),var(--sea-d));color:#fff;padding:34px 16px 26px;text-align:center;overflow:hidden}
+header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:40px;background:var(--sand);clip-path:polygon(0 100%,100% 100%,100% 0,75% 60%,50% 10%,25% 60%,0 0)}
+.kicker{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;opacity:.8;margin-bottom:8px}
+header.hero h1{font-family:'Fraunces',serif;font-weight:900;font-size:2rem;line-height:1.05;margin-bottom:8px}
+header.hero p{font-size:.95rem;opacity:.9;max-width:440px;margin:0 auto}
+.langbar{display:flex;gap:6px;justify-content:center;margin-top:16px}
+.langbar button{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:5px 14px;border-radius:20px;font-size:.8rem;font-weight:700;cursor:pointer}
+.langbar button.on{background:#fff;color:var(--deep)}
+
+/* WOHNUNGS-KACHELN */
+.lead{text-align:center;font-family:'Fraunces',serif;font-size:1.4rem;margin:26px 0 4px}
+.lead-sub{text-align:center;color:#6b7680;font-size:.9rem;margin-bottom:20px}
+.units{display:grid;gap:16px;padding-bottom:10px}
+.unit-card{background:var(--shell);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.unit-card:active{transform:scale(.99)}
+.unit-card .ph{aspect-ratio:16/10;background:linear-gradient(135deg,var(--sea),var(--sea-d));position:relative;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);font-size:.8rem}
+.unit-card .ph img{width:100%;height:100%;object-fit:cover}
+.unit-card .body{padding:14px 16px}
+.unit-card h3{font-family:'Fraunces',serif;font-size:1.25rem;margin-bottom:2px}
+.unit-card .meta{font-size:.82rem;color:#6b7680;margin-bottom:8px}
+.unit-card .go{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;font-weight:700;color:var(--sea-d)}
+
+/* DETAIL VIEW */
+.detail{display:none}
+.detail.active{display:block}
+.home.hidden{display:none}
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--sea-d);font-weight:700;font-size:.9rem;cursor:pointer;padding:14px 0}
+.gallery{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:14px;margin-bottom:6px}
+.gallery .ph{flex:0 0 88%;scroll-snap-align:center;aspect-ratio:16/10;background:linear-gradient(135deg,var(--sea),var(--sea-d));border-radius:14px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);font-size:.8rem;overflow:hidden}
+.gallery .ph img{width:100%;height:100%;object-fit:cover}
+.dot-row{text-align:center;font-size:.75rem;color:#9aa4ac;margin-bottom:14px}
+.detail h2{font-family:'Fraunces',serif;font-size:1.6rem;margin-bottom:4px}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.fact{background:var(--shell);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:.82rem}
+.fact b{color:var(--sea-d)}
+.section-title{font-family:'Fraunces',serif;font-size:1.15rem;margin:22px 0 8px;display:flex;align-items:center;gap:8px}
+
+/* VOICE / CHAT */
+.voicebox{background:var(--shell);border:1px solid var(--line);border-radius:18px;padding:16px;margin:8px 0 4px}
+.voice-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.vbtn{flex:1;min-width:130px;background:var(--sea-d);color:#fff;border:none;border-radius:12px;padding:13px;font-size:.92rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.vbtn.listen{background:var(--coral)}
+.vbtn:disabled{opacity:.5}
+.vbtn.speaking{animation:pulse 1.1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.chiprow{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:18px;padding:7px 13px;font-size:.8rem;cursor:pointer;color:var(--sea-d);font-weight:500}
+.chip:active{background:var(--sand)}
+.chatlog{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.msg{padding:10px 13px;border-radius:14px;font-size:.9rem;max-width:88%}
+.msg.user{background:var(--sea-d);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.ai{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.ai.think{color:#9aa4ac;font-style:italic}
+.transcript{font-size:.82rem;color:#6b7680;min-height:18px;margin-top:8px;text-align:center}
+
+/* BELEGUNG */
+.cal-note{background:var(--shell);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:.86rem;margin-bottom:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;margin:8px 0 12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:15px;height:15px;border-radius:4px;border:1px solid #bbb;display:inline-block}
+.ml{font-weight:700;color:var(--sea-d);margin:14px 0 6px;font-size:.92rem}
+.wr,.dg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.wc{text-align:center;font-size:.66rem;font-weight:700;color:#9aa4ac;padding:2px 0}
+.dc{aspect-ratio:1;border-radius:7px;border:1px solid #e7e0d4;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.66rem;background:#fff;min-height:36px}
+.dc.em{background:transparent;border:none}
+.dc .dn{font-weight:700;font-size:.66rem}
+.dc .pr{font-size:.54rem;color:#2e7d32;font-weight:700}
+.dc.free{background:#dcefdc}
+.dc.bk{background:#f5d9d4;color:#a23c2a}
+.dc.bk .pr{display:none}
+.dc.past{background:#f0f0f0}
+.dc.half-an{background:linear-gradient(135deg,#dcefdc 0 48%,#f5d9d4 52% 100%)}
+.dc.half-ab{background:linear-gradient(135deg,#f5d9d4 0 48%,#dcefdc 52% 100%)}
+.dc.wechsel{background:linear-gradient(135deg,#f5d9d4 0 46%,#fff 47% 53%,#f5d9d4 54% 100%);color:#a23c2a}
+.cal-status{text-align:center;font-size:.76rem;color:#9aa4ac;margin-top:8px}
+
+/* CTA / FOOTER */
+.cta{background:var(--deep);color:#fff;border-radius:18px;padding:20px 18px;text-align:center;margin:24px 0}
+.cta h3{font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:6px}
+.cta p{font-size:.88rem;opacity:.9;margin-bottom:14px}
+.cta a{display:inline-block;background:var(--dune);color:var(--deep);padding:12px 24px;border-radius:24px;font-weight:700;text-decoration:none;font-size:.92rem}
+footer{text-align:center;padding:24px 16px 40px;font-size:.78rem;color:#9aa4ac}
+.cfg-warn{background:#fff3cd;color:#7a5b00;border-radius:10px;padding:8px 12px;font-size:.8rem;margin:10px 0}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kicker" data-t="kicker">Ostseebad Thiessow · Mönchgut · Rügen</div>
+  <h1 data-t="title">Dünenvilla &amp; Strandvilla</h1>
+  <p data-t="subtitle">Vier Ferienwohnungen im Dünenwald – das Meer nur einen Wimpernschlag entfernt. Wählen Sie Ihre Wohnung und lassen Sie sie sich erzählen.</p>
+  <div class="langbar">
+    <button id="lang-de" class="on" onclick="setLang('de')">Deutsch</button>
+    <button id="lang-en" onclick="setLang('en')">English</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- HOME -->
+  <div class="home" id="home">
+    <div class="lead" data-t="lead">Unsere vier Wohnungen</div>
+    <div class="lead-sub" data-t="leadsub">Tippen Sie auf eine Wohnung für Fotos, Sprach-Beschreibung und freie Tage.</div>
+    <div class="units" id="unitGrid"></div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="detail" id="detail"></div>
+
+  <div class="cta">
+    <h3 data-t="ctaTitle">Noch Fragen oder direkt buchen?</h3>
+    <p data-t="ctaText">Schreiben Sie uns – wir antworten persönlich und schnell.</p>
+    <a id="ctaMail" href="mailto:info@duenenvilla.de" data-t="ctaBtn">Anfrage senden</a>
+  </div>
+</div>
+
+<footer>
+  Dünenvilla &amp; Strandvilla · Im Dünenwald 4a · 18586 Ostseebad Mönchgut OT Thiessow · www.duenenvilla.de
+</footer>
+
+<script>
+/* ====== KONFIGURATION ====== */
+// Cloudflare-Worker (myburano) als sicherer Proxy zur Anthropic-API:
+var WORKER_URL = "https://blue-lagune-proxy.friesh.workers.dev";   // ggf. anpassen
+// Apps-Script Web-App-URL fuer die Belegung (public-Endpunkt):
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbFV9MBeZzGVtFj8bHhRv6jubwXEReZvvAQPdPnAxgL8PGWOPSDIX26eq3bJGFa2N6vw/exec";
+var KONTAKT_MAIL = "info@duenenvilla.de";
+
+// Cloudflare-R2 Basis-URL fuer die Fotos (OHNE abschliessenden Schraegstrich).
+// Beispiele:  "https://pub-xxxxxxxx.r2.dev"   ODER   "https://fotos.duenenvilla.de"
+var FOTO_BASE = "https://pub-de913628993f4347a9f7f63ea9305d51.r2.dev";
+// name kann einen Ordner enthalten, z.B. "DV3-/(1).JPG" -> Schraegstrich bleibt
+// erhalten, nur die einzelnen Pfadteile werden encodiert.
+function fotoUrl(name){
+  return FOTO_BASE + "/" + name.split("/").map(encodeURIComponent).join("/") + "?v=20260627b";
+}
+// Erzeugt fuer eine Liste von Basisnamen je einen Eintrag.
+function fotoListe(namen){ return namen.slice(); }
+// Erzeugt aus einem Ordnerpraefix + Anzahl eine Liste "  (1).JPG" ... "  (n).JPG"
+// (zwei Leerzeichen vor der Klammer, weil die Dateien in R2 tatsaechlich so benannt sind!)
+function fotoOrdner(ordner, anzahl, ext){
+  var arr=[];
+  for(var i=1;i<=anzahl;i++){ arr.push(ordner+"/  ("+i+")."+ext); }
+  return arr;
+}
+// Liefert zur gegebenen Endung die jeweils andere Schreibweise (.JPG <-> .jpg)
+function altExt(name){
+  if(/\.JPG$/.test(name))return name.slice(0,-4)+".jpg";
+  if(/\.jpg$/.test(name))return name.slice(0,-4)+".JPG";
+  if(/\.JPEG$/.test(name))return name.slice(0,-5)+".jpeg";
+  if(/\.jpeg$/.test(name))return name.slice(0,-5)+".JPEG";
+  return null;
+}
+// Erzeugt ein <img> mit automatischem Fallback auf die andere Endungs-Schreibweise.
+// Wenn beide Versuche fehlschlagen (Datei existiert nicht), wird die Kachel ausgeblendet.
+function imgTag(name, alt){
+  var u1=fotoUrl(name);
+  var alt2=altExt(name);
+  var u2= alt2 ? fotoUrl(alt2) : "";
+  var oe = u2
+    ? "if(!this.dataset.try){this.dataset.try=1;this.src='"+u2+"';}else{this.parentNode.style.display='none';}"
+    : "this.parentNode.style.display='none';";
+  return '<img src="'+u1+'" alt="'+(alt||"")+'" loading="lazy" onerror="'+oe+'">';
+}
+
+/* ====== WOHNUNGSDATEN ====== */
+// Fotos: trage hier die direkten Bild-URLs ein (z.B. von deiner Website / GitHub).
+var UNITS=[
+  {
+    id:"dv3", name:"Dünenvilla 3", short:"DV3", qm:70, pers:5, schlaf:2,
+    off:95, neb:110, hau:130,
+    fotos:fotoOrdner("DV3-",14,"JPG"),
+    de:"Die Dünenvilla 3 ist unsere großzügige 70-Quadratmeter-Wohnung über zwei Ebenen für bis zu fünf Gäste. Zwei Schlafzimmer mit Doppelbetten, ein großer Wohn- und Essbereich mit Ledercouch, eine komplett ausgestattete Küchenzeile und ein helles Bad mit Dusche. Eine Besonderheit: die Wärmekabine im Schlafzimmer. Über die rund zehn Quadratmeter große Dachterrasse gelangen Sie in den eingezäunten Garten. Sie hören das Meer rauschen – der Sandstrand liegt nur hundert Meter entfernt, getrennt nur durch den Küstenwald.",
+    en:"Dünenvilla 3 is our spacious 70-square-metre apartment across two levels for up to five guests. Two bedrooms with double beds, a large living and dining area with a leather sofa, a fully equipped kitchenette and a bright bathroom with shower. A special touch: the infrared cabin in the bedroom. A rooftop terrace of about ten square metres leads into the fenced garden. You can hear the sea – the sandy beach is just a hundred metres away, separated only by the coastal forest."
+  },
+  {
+    id:"dv5", name:"Dünenvilla 5", short:"DV5", qm:46, pers:4, schlaf:1,
+    off:85, neb:95, hau:110,
+    fotos:fotoOrdner("DV5-",25,"JPG"),
+    de:"Die Dünenvilla 5 ist eine moderne 46-Quadratmeter-Wohnung im Erdgeschoss mit eigenem Eingang direkt in den weitläufigen, eingezäunten Garten. Ein Schlafzimmer mit Doppelbett, ein großes Wohnzimmer mit Schlafcouch, ein helles Bad mit ebenerdiger Dusche und eine Küche mit Ceranfeld. Alle Räume haben Fußbodenheizung. Auf der zwanzig Quadratmeter großen Süd-West-Terrasse genießen Sie die Abendsonne. Direkt hinter dem Grundstück beginnt der Küstenwald mit dem Strand von Thiessow inklusive Hundestrand.",
+    en:"Dünenvilla 5 is a modern 46-square-metre ground-floor apartment with its own entrance leading straight into the spacious, fenced garden. One bedroom with a double bed, a large living room with a sofa bed, a bright bathroom with a level-access shower and a kitchen with a ceramic hob. All rooms have underfloor heating. On the twenty-square-metre south-west terrace you can enjoy the evening sun. The coastal forest with Thiessow beach – including a dog beach – begins right behind the property."
+  },
+  {
+    id:"sv8a", name:"Strandvilla 8a", short:"SV8a", qm:170, pers:6, schlaf:3,
+    off:165, neb:195, hau:220,
+    fotos:[],
+    de:"Die Strandvilla 8a ist unser großzügiges Domizil mit rund 170 Quadratmetern für bis zu sechs Gäste und drei Schlafzimmern – ideal für Familien oder zwei Paare. Mit direktem Strandzugang gehört sie zu den begehrtesten Adressen in Thiessow. Helle, moderne Räume, viel Platz und die unmittelbare Nähe zum Ostseestrand machen den Aufenthalt besonders.",
+    en:"Strandvilla 8a is our generous retreat of around 170 square metres for up to six guests, with three bedrooms – ideal for families or two couples. With direct beach access it is one of the most sought-after addresses in Thiessow. Bright, modern rooms, plenty of space and the immediate proximity to the Baltic beach make every stay special."
+  },
+  {
+    id:"sv8b", name:"Strandvilla 8b", short:"SV8b", qm:170, pers:6, schlaf:3,
+    off:165, neb:195, hau:220,
+    fotos:fotoOrdner("SV8b-",25,"jpg"),
+    de:"Die Strandvilla 8b ist das Schwesterappartement der 8a: rund 170 Quadratmeter, drei Schlafzimmer und Platz für bis zu sechs Gäste, ebenfalls mit direktem Strandzugang. Großzügige Wohnräume, moderne Ausstattung und der Strand praktisch vor der Tür – ein Ort zum Ankommen und Durchatmen.",
+    en:"Strandvilla 8b stretches across around 170 square metres and several levels – room for up to six guests in three bedrooms. A generous, light-filled living and dining area with a leather sofa opens onto the terrace and garden. The fully equipped kitchen invites shared evenings. A special highlight is the large bathroom with its own sauna. A beautiful wooden staircase leads up to the cosy attic level. The beach is practically at the doorstep – a place to arrive and breathe."
+  }
+];
+
+/* Kurtaxe-Info (Mönchgut 2026) – fuer Sprachantworten */
+var KURTAXE_DE="Auf Mönchgut wird eine Kurabgabe erhoben, die vor Ort zu zahlen ist. In der Hauptsaison vom 1. Mai bis 31. Oktober beträgt sie 3,37 Euro pro Erwachsenem und Tag, ermäßigt 1,69 Euro für Kinder von sieben bis vierzehn Jahren; in der Nebensaison 2,54 Euro beziehungsweise 1,27 Euro. Kinder unter sieben Jahren sind frei. Für Hunde wird ein Euro pro Tag berechnet.";
+var KURTAXE_EN="On the Mönchgut peninsula a visitor's tax applies, payable on site. In high season from 1 May to 31 October it is 3.37 euros per adult per day, reduced to 1.69 euros for children aged seven to fourteen; in low season 2.54 and 1.27 euros respectively. Children under seven are free. Dogs are charged one euro per day.";
+
+var LAGE_DE="Thiessow liegt im äußersten Südosten von Rügen auf der Halbinsel Mönchgut, einem der schönsten Flecken der Insel – gelegen zwischen drei Meeren. Bis zum feinen Sandstrand sind es nur hundert Meter durch den Dünenwald, fünfhundert Meter zum Fischereihafen und etwa tausend Meter zur Westküste, einem bekannten Surf-Spot. Naturfreunde finden hier Ruhe, ohne auf die Vorzüge eines Ostseebades zu verzichten.";
+var LAGE_EN="Thiessow lies in the far south-east of Rügen on the Mönchgut peninsula, one of the most beautiful corners of the island – set between three seas. The fine sandy beach is just a hundred metres away through the dune forest, the fishing harbour five hundred metres, and the west coast, a well-known surf spot, about a thousand metres. Nature lovers find peace here without giving up the comforts of a Baltic seaside resort.";
+
+/* ====== SPRACHE / UI-TEXTE ====== */
+var LANG="de";
+var T={
+  de:{kicker:"Ostseebad Thiessow · Mönchgut · Rügen",title:"Dünenvilla &amp; Strandvilla",
+    subtitle:"Vier Ferienwohnungen im Dünenwald – das Meer nur einen Wimpernschlag entfernt. Wählen Sie Ihre Wohnung und lassen Sie sie sich erzählen.",
+    lead:"Unsere vier Wohnungen",leadsub:"Tippen Sie auf eine Wohnung für Fotos, Sprach-Beschreibung und freie Tage.",
+    persons:"Personen",bedrooms:"Schlafzimmer",sqm:"m²",
+    listen:"Beschreibung anhören",ask:"Frage stellen",stop:"Stopp",
+    backtxt:"Zurück zur Übersicht",
+    askPlaceholder:"Stellen Sie Ihre Frage…",
+    chips:["Wie ist die Lage?","Wie groß ist die Wohnung?","Wie viele Schlafzimmer?","Was kostet die Kurtaxe?","Gibt es freie Tage im Sommer?"],
+    calTitle:"Freie Tage",calNote:"Grün bedeutet frei, rot belegt. Geteilte Felder sind An- oder Abreisetage. Die Preise gelten pro Nacht.",
+    free:"frei",occ:"belegt",change:"An-/Abreise",
+    ctaTitle:"Noch Fragen oder direkt buchen?",ctaText:"Schreiben Sie uns – wir antworten persönlich und schnell.",ctaBtn:"Anfrage senden",
+    thinking:"einen Moment…"},
+  en:{kicker:"Baltic resort Thiessow · Mönchgut · Rügen",title:"Dünenvilla &amp; Strandvilla",
+    subtitle:"Four holiday apartments in the dune forest – the sea just a blink away. Choose your apartment and let it tell its story.",
+    lead:"Our four apartments",leadsub:"Tap an apartment for photos, a spoken description and available dates.",
+    persons:"guests",bedrooms:"bedrooms",sqm:"m²",
+    listen:"Listen to description",ask:"Ask a question",stop:"Stop",
+    backtxt:"Back to overview",
+    askPlaceholder:"Ask your question…",
+    chips:["Where is it located?","How big is the apartment?","How many bedrooms?","What is the visitor's tax?","Any free days in summer?"],
+    calTitle:"Available dates",calNote:"Green means free, red booked. Split cells are arrival or departure days. Prices are per night.",
+    free:"free",occ:"booked",change:"arrival/departure",
+    ctaTitle:"Questions or ready to book?",ctaText:"Write to us – we reply personally and quickly.",ctaBtn:"Send enquiry",
+    thinking:"one moment…"}
+};
+
+function setLang(l){
+  LANG=l;
+  document.getElementById("lang-de").classList.toggle("on",l==="de");
+  document.getElementById("lang-en").classList.toggle("on",l==="en");
+  document.documentElement.lang=l;
+  var t=T[l];
+  document.querySelectorAll("[data-t]").forEach(function(el){
+    var k=el.getAttribute("data-t");if(t[k])el.innerHTML=t[k];
+  });
+  renderGrid();
+  if(currentUnit)openUnit(currentUnit,true);
+}
+
+/* ====== HOME GRID ====== */
+function renderGrid(){
+  var t=T[LANG],h="";
+  UNITS.forEach(function(u){
+    var img=u.fotos&&u.fotos[0]?imgTag(u.fotos[0],u.name):'Foto folgt';
+    h+='<div class="unit-card" onclick="openUnit(\''+u.id+'\')">'
+      +'<div class="ph">'+img+'</div>'
+      +'<div class="body"><h3>'+u.name+'</h3>'
+      +'<div class="meta">'+u.qm+' '+t.sqm+' · '+u.pers+' '+t.persons+' · '+u.schlaf+' '+t.bedrooms+'</div>'
+      +'<span class="go">'+(LANG==="de"?"Entdecken":"Explore")+' →</span></div></div>';
+  });
+  document.getElementById("unitGrid").innerHTML=h;
+}
+
+/* ====== DETAIL ====== */
+var currentUnit=null;
+function openUnit(id,keepScroll){
+  currentUnit=id;
+  var u=UNITS.find(function(x){return x.id===id;}),t=T[LANG];
+  var gal="";
+  if(u.fotos&&u.fotos.length){u.fotos.forEach(function(f){gal+='<div class="ph">'+imgTag(f,u.name)+'</div>';});}
+  else{gal='<div class="ph">Fotos folgen</div><div class="ph">Fotos folgen</div>';}
+  var chips="";
+  t.chips.forEach(function(c){chips+='<span class="chip" onclick="askAI(\''+id+'\',this.textContent)">'+c+'</span>';});
+  var h='<button class="back" onclick="closeUnit()">← '+t.backtxt+'</button>'
+    +'<div class="gallery">'+gal+'</div>'
+    +'<h2>'+u.name+'</h2>'
+    +'<div class="facts"><span class="fact"><b>'+u.qm+'</b> '+t.sqm+'</span>'
+    +'<span class="fact"><b>'+u.pers+'</b> '+t.persons+'</span>'
+    +'<span class="fact"><b>'+u.schlaf+'</b> '+t.bedrooms+'</span></div>'
+    +'<div class="voicebox">'
+    +'<div class="voice-controls">'
+    +'<button class="vbtn" id="btnListen" onclick="speakDesc(\''+id+'\')">🔊 '+t.listen+'</button>'
+    +'<button class="vbtn listen" id="btnAsk" onclick="startVoice(\''+id+'\')">🎤 '+t.ask+'</button>'
+    +'</div>'
+    +'<div class="transcript" id="transcript"></div>'
+    +'<div class="chiprow">'+chips+'</div>'
+    +'<div class="chatlog" id="chatlog"></div>'
+    +'</div>'
+    +'<div class="section-title">📅 '+t.calTitle+'</div>'
+    +'<div class="cal-note">'+t.calNote+'</div>'
+    +'<div class="legend">'
+    +'<span><span class="sw" style="background:#dcefdc"></span>'+t.free+'</span>'
+    +'<span><span class="sw" style="background:#f5d9d4"></span>'+t.occ+'</span>'
+    +'<span><span class="sw" style="background:linear-gradient(135deg,#dcefdc 48%,#f5d9d4 52%)"></span>'+t.change+'</span>'
+    +'</div>'
+    +'<div id="calBox"></div>'
+    +'<div class="cal-status" id="calStatus"></div>';
+  var d=document.getElementById("detail");
+  d.innerHTML=h;d.classList.add("active");
+  document.getElementById("home").classList.add("hidden");
+  if(!keepScroll)window.scrollTo({top:0,behavior:"smooth"});
+  renderCal(id);
+}
+function closeUnit(){
+  stopSpeak();
+  currentUnit=null;
+  document.getElementById("detail").classList.remove("active");
+  document.getElementById("home").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ====== SPRACHAUSGABE (Text-to-Speech) ====== */
+var synth=window.speechSynthesis;
+var VOICES=[];
+function loadVoices(){VOICES=synth?synth.getVoices():[];}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+function pickVoice(){
+  if(!VOICES.length)loadVoices();
+  var want=LANG==="de"?"de":"en";
+  // exakt passende Sprache, bevorzugt natuerliche/weibliche Stimmen
+  var exact=VOICES.filter(function(v){return v.lang.toLowerCase().indexOf(want)===0;});
+  if(!exact.length)return null;
+  return exact.find(function(v){return /female|woman|frau|google|natural|premium/i.test(v.name);})||exact[0];
+}
+function speak(text){
+  if(!synth)return;
+  synth.cancel();
+  var targetLang=LANG==="de"?"de-DE":"en-US";
+  var want=LANG==="de"?"de":"en";
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang=targetLang;u.rate=.98;u.pitch=1.05;
+  var v=pickVoice();
+  // Stimme NUR setzen, wenn sie wirklich zur Zielsprache passt - sonst lieber nur lang erzwingen
+  if(v && v.lang && v.lang.toLowerCase().indexOf(want)===0){u.voice=v;u.lang=v.lang;}
+  else{u.lang=targetLang;}
+  var btn=document.getElementById("btnListen");
+  u.onstart=function(){if(btn)btn.classList.add("speaking");};
+  u.onend=function(){if(btn)btn.classList.remove("speaking");};
+  setTimeout(function(){synth.speak(u);},80);
+}
+function stopSpeak(){if(synth)synth.cancel();var b=document.getElementById("btnListen");if(b)b.classList.remove("speaking");}
+function speakDesc(id){
+  var u=UNITS.find(function(x){return x.id===id;});
+  var txt=LANG==="de"?u.de:u.en;
+  addMsg("ai",txt);
+  speak(txt);
+}
+
+/* ====== SPRACHEINGABE (Speech-to-Text) ====== */
+var recog=null;
+function startVoice(id){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){addMsg("ai",LANG==="de"?"Spracheingabe wird auf diesem Gerät nicht unterstützt – bitte tippen Sie Ihre Frage über die Schnellfragen.":"Voice input is not supported on this device – please use the quick questions.");return;}
+  stopSpeak();
+  recog=new SR();recog.lang=LANG==="de"?"de-DE":"en-US";recog.interimResults=true;recog.maxAlternatives=1;
+  var tr=document.getElementById("transcript");
+  tr.textContent=LANG==="de"?"… ich höre zu":"… listening";
+  recog.onresult=function(e){
+    var txt="";for(var i=0;i<e.results.length;i++)txt+=e.results[i][0].transcript;
+    tr.textContent=txt;
+    if(e.results[e.results.length-1].isFinal){recog.stop();askAI(id,txt);tr.textContent="";}
+  };
+  recog.onerror=function(){tr.textContent="";};
+  recog.start();
+}
+
+/* ====== KI-CHAT via Worker ====== */
+function addMsg(role,text){
+  var log=document.getElementById("chatlog");if(!log)return null;
+  var d=document.createElement("div");d.className="msg "+role;d.textContent=text;
+  log.appendChild(d);d.scrollIntoView({behavior:"smooth",block:"nearest"});return d;
+}
+async function askAI(id,question){
+  if(!question||!question.trim())return;
+  if(!BELEGT||!Object.keys(BELEGT).length){try{await loadBelegung();}catch(e){}}
+  var u=UNITS.find(function(x){return x.id===id;}),t=T[LANG];
+  addMsg("user",question);
+
+  // Frage nach freien Tagen? -> direkt aus den echten Daten beantworten (ohne KI-Umweg)
+  var q=question.toLowerCase();
+  var fragtFrei=/frei|verfügbar|verfugbar|belegt|wann.*(kommen|buchen)|freie tage|available|free|vacan|when can/.test(q);
+  if(fragtFrei){
+    var monat=erkenneMonat(q);
+    var fz=freieZeitraeume(id, monat);
+    var monatName=monat!=null?(LANG==="de"?MI_DE[monat]:MI_EN[monat]):null;
+    var ans;
+    if(fz.length){
+      if(monatName){
+        ans=LANG==="de"
+          ?("Im "+monatName+" sind in der "+u.name+" diese Zeiträume frei: "+fz.join(", ")+". Mindestaufenthalt: Hauptsaison 7, Nebensaison 5 Nächte. Schreiben Sie uns gern für eine Buchung.")
+          :("In "+monatName+", "+u.name+" has these periods available: "+fz.join(", ")+". Minimum stay: 7 nights in high season, 5 in low season. Feel free to write to us to book.");
+      }else{
+        ans=LANG==="de"
+          ?("Gerne! In der "+u.name+" sind aktuell diese Zeiträume frei: "+fz.slice(0,6).join(", ")+". In der Hauptsaison gilt ein Mindestaufenthalt von 7 Nächten, in der Nebensaison 5. Schreiben Sie uns einfach für eine verbindliche Buchung.")
+          :("Gladly! In "+u.name+" these periods are currently available: "+fz.slice(0,6).join(", ")+". Minimum stay is 7 nights in high season, 5 in low season. Just write to us for a firm booking.");
+      }
+    }else{
+      if(monatName){
+        ans=LANG==="de"
+          ?("Im "+monatName+" ist die "+u.name+" leider schon ausgebucht. Schauen Sie gern in den Belegungsplan unten für andere Zeiträume oder schreiben Sie uns.")
+          :(u.name+" is unfortunately fully booked in "+monatName+". Please check the calendar below for other dates or write to us.");
+      }else{
+        ans=LANG==="de"
+          ?("Im angezeigten Zeitraum ist die "+u.name+" leider gut gebucht. Schauen Sie gern in den Belegungsplan unten oder schreiben Sie uns – wir finden eine Lösung.")
+          :("In the shown period "+u.name+" is well booked. Please check the calendar below or write to us – we'll find a solution.");
+      }
+    }
+    addMsg("ai",ans);
+    speak(ans);
+    return;
+  }
+
+  var thinking=addMsg("ai think",t.thinking);
+  // Kontext fuer die KI zusammenstellen
+  var freie=freieZeitraeume(id);
+  var freiTxt="";
+  if(freie.length){
+    freiTxt=LANG==="de"
+      ?("\n\nAktuell freie Zeiträume (Anreise bis Abreise): "+freie.join("; ")+". Mindestaufenthalt: Hauptsaison 7, Nebensaison 5 Nächte. Im Sommer sind nur Anschlussbuchungen möglich.")
+      :("\n\nCurrently available periods (arrival to departure): "+freie.join("; ")+". Minimum stay: high season 7, low season 5 nights. In summer only consecutive bookings are possible.");
+  }else{
+    freiTxt=LANG==="de"?"\n\nZu freien Tagen bitte direkt anfragen.":"\n\nFor available dates please enquire directly.";
+  }
+  var ctx=(LANG==="de"?u.de:u.en)+"\n\n"
+    +(LANG==="de"?LAGE_DE:LAGE_EN)+"\n\n"
+    +(LANG==="de"?KURTAXE_DE:KURTAXE_EN)+"\n\n"
+    +(LANG==="de"
+      ?("Daten: "+u.qm+" m², bis "+u.pers+" Personen, "+u.schlaf+" Schlafzimmer. Preise pro Nacht: Nebensaison/Winter "+u.off+" €, Nebensaison "+u.neb+" €, Hauptsaison "+u.hau+" €. Endreinigung extra, ab der zweiten Person 5 € pro Nacht, Hund 5 € pro Nacht, Wäschepaket 25 € pro Person.")
+      :("Facts: "+u.qm+" m², up to "+u.pers+" guests, "+u.schlaf+" bedrooms. Prices per night: low/winter "+u.off+" €, low season "+u.neb+" €, high season "+u.hau+" €. Final cleaning extra, from the second guest 5 € per night, dog 5 € per night, linen package 25 € per person."))
+    +freiTxt;
+  var sys=LANG==="de"
+    ?("Du bist die freundliche, herzliche Gastgeber-Stimme der Ferienwohnung "+u.name+" in Thiessow auf Rügen. Antworte kurz, warm und einladend auf Deutsch, in höchstens drei Sätzen. Nutze nur die folgenden Informationen und erfinde nichts dazu. Wenn du etwas nicht weißt, lade freundlich ein, direkt anzufragen.\n\n"+ctx)
+    :("You are the friendly, warm host voice of the holiday apartment "+u.name+" in Thiessow on Rügen. Reply ONLY in English - never use German words or sentences, not even for place names beyond the apartment name. Answer briefly, warmly and invitingly, in at most three sentences. Use only the following information and do not invent anything. If you don't know something, kindly invite the guest to enquire directly.\n\n"+ctx);
+  try{
+    var res=await fetch(WORKER_URL,{
+      method:"POST",redirect:"follow",
+      body:JSON.stringify({
+        model:"claude-sonnet-4-6",max_tokens:300,
+        system:sys,
+        messages:[{role:"user",content:question}]
+      })
+    });
+    var data=await res.json();
+    var answer="";
+    if(data.content&&data.content.length){answer=data.content.filter(function(c){return c.type==="text";}).map(function(c){return c.text;}).join(" ");}
+    else if(typeof data==="string"){answer=data;}
+    else if(data.answer){answer=data.answer;}
+    if(thinking)thinking.remove();
+    if(!answer)answer=LANG==="de"?"Das beantworten wir Ihnen gern persönlich – schreiben Sie uns einfach.":"We'll gladly answer that personally – just write to us.";
+    addMsg("ai",answer);
+    speak(answer);
+  }catch(e){
+    if(thinking)thinking.remove();
+    var msg=LANG==="de"?"Im Moment ist die Sprachantwort nicht erreichbar. Schreiben Sie uns gern direkt an info@duenenvilla.de.":"The voice answer is currently unavailable. Please write to us at info@duenenvilla.de.";
+    addMsg("ai",msg);
+  }
+}
+
+/* ====== BELEGUNG (public-Endpunkt) ====== */
+var MI_DE=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+var MI_EN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+var WL=["Mo","Di","Mi","Do","Fr","Sa","So"];
+function pd(s){return new Date(s+"T00:00:00");}
+function dk(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function getSeason(d){var m=d.getMonth()+1,dy=d.getDate(),y=d.getFullYear();if(y===2027&&m===1&&dy<=5)return"hau";if(m===12&&dy>=23)return"hau";if((m===6&&dy>=16)||m===7||m===8||(m===9&&dy<=14))return"hau";if(m===5||(m===6&&dy<=15))return"neb";if((m===9&&dy>=15)||m===10)return"neb";return"off";}
+var TODAY=new Date();TODAY.setHours(0,0,0,0);
+var BELEGT={};
+// Liefert rohe freie Zeitraeume (Datumsobjekte) der naechsten ~300 Tage
+function freieRoh(uid){
+  var arr=(BELEGT[uid]||[]).slice().map(function(b){return{v:pd(b.von),b:pd(b.bis)};});
+  var frei=[],start=new Date(TODAY),ende=new Date(TODAY);ende.setDate(ende.getDate()+300);
+  function belegtAm(d){for(var i=0;i<arr.length;i++){if(d>=arr[i].v&&d<arr[i].b)return true;}return false;}
+  var cur=null,d=new Date(start);
+  while(d<=ende){
+    if(!belegtAm(d)){ if(!cur)cur={von:new Date(d)}; cur.bis=new Date(d); }
+    else if(cur){ frei.push(cur); cur=null; }
+    d.setDate(d.getDate()+1);
+  }
+  if(cur)frei.push(cur);
+  return frei.filter(function(f){return (f.bis-f.von)/864e5>=2;});
+}
+// Formatiert freie Zeitraeume als Text. monat (0-11) optional -> nur Zeitraeume, die diesen Monat beruehren.
+function freieZeitraeume(uid, monat){
+  var frei=freieRoh(uid);
+  if(monat!=null){
+    frei=frei.filter(function(f){
+      // beruehrt der Zeitraum den gewuenschten Monat?
+      var a=f.von.getMonth(), b=f.bis.getMonth();
+      if(a<=b)return monat>=a&&monat<=b;
+      return monat>=a||monat<=b; // Jahreswechsel
+    });
+  }
+  function fmt(dt){return dt.getDate()+"."+(dt.getMonth()+1)+".";}
+  return frei.slice(0,8).map(function(f){
+    var bisPlus=new Date(f.bis);bisPlus.setDate(bisPlus.getDate()+1);
+    return fmt(f.von)+" bis "+fmt(bisPlus);
+  });
+}
+// Erkennt einen Monatsnamen in der Frage und gibt den Monatsindex (0-11) zurueck, sonst null
+function erkenneMonat(q){
+  var monate=[
+    ["januar","january"],["februar","february"],["märz","marz","march"],
+    ["april"],["mai","may"],["juni","june"],["juli","july"],["august"],
+    ["september"],["oktober","october"],["november"],["dezember","december"]
+  ];
+  for(var i=0;i<12;i++){
+    for(var k=0;k<monate[i].length;k++){ if(q.indexOf(monate[i][k])>=0)return i; }
+  }
+  return null;
+}
+function dayStatus(uid,key){
+  var arr=BELEGT[uid]||[],isAn=false,isAb=false,isMid=false,d=pd(key);
+  for(var i=0;i<arr.length;i++){
+    if(arr[i].von===key)isAn=true;if(arr[i].bis===key)isAb=true;
+    var v=pd(arr[i].von),b=pd(arr[i].bis);if(d>v&&d<b)isMid=true;
+  }
+  if(isMid)return"voll";if(isAn&&isAb)return"beides";if(isAn)return"anreise";if(isAb)return"abreise";return"frei";
+}
+function renderCal(id){
+  var u=UNITS.find(function(x){return x.id===id;});
+  var MI=LANG==="de"?MI_DE:MI_EN;
+  var CM=TODAY.getMonth(),CY=TODAY.getFullYear(),h="";
+  for(var mi=0;mi<10;mi++){
+    var m=(CM+mi)%12,yr=CY+Math.floor((CM+mi)/12);
+    h+='<div class="ml">'+MI[m]+' '+yr+'</div><div class="wr">';
+    for(var i=0;i<7;i++)h+='<div class="wc">'+WL[i]+'</div>';
+    h+='</div><div class="dg">';
+    var fd=new Date(yr,m,1).getDay(),off=fd===0?6:fd-1;
+    for(var x=0;x<off;x++)h+='<div class="dc em"></div>';
+    var dim=new Date(yr,m+1,0).getDate();
+    for(var day=1;day<=dim;day++){
+      var date=new Date(yr,m,day),key=dk(date),cls="dc",past=date<TODAY;
+      var stt=dayStatus(id,key);
+      var c='<span class="dn">'+day+'</span>';
+      if(past){cls+=" past";c='<span class="dn" style="color:#ccc">'+day+'</span>';}
+      else if(stt==="voll"){cls+=" bk";}
+      else if(stt==="anreise"){cls+=" half-an";}
+      else if(stt==="abreise"){cls+=" half-ab";c+='<span class="pr">'+u[getSeason(date)]+'€</span>';}
+      else if(stt==="beides"){cls+=" wechsel";}
+      else{cls+=" free";c+='<span class="pr">'+u[getSeason(date)]+'€</span>';}
+      h+='<div class="'+cls+'">'+c+'</div>';
+    }
+    h+='</div>';
+  }
+  document.getElementById("calBox").innerHTML=h;
+}
+async function loadBelegung(){
+  if(SCRIPT_URL.indexOf("DEINE_")===0)return;
+  try{
+    var sep=SCRIPT_URL.indexOf("?")>=0?"&":"?";
+    var res=await fetch(SCRIPT_URL+sep+"action=public",{method:"GET"});
+    var data=await res.json();
+    if(data.ok&&data.belegt){BELEGT=data.belegt;if(currentUnit)renderCal(currentUnit);}
+  }catch(e){}
+}
+
+/* ====== INIT ====== */
+document.getElementById("ctaMail").href="mailto:"+KONTAKT_MAIL;
+renderGrid();
+loadBelegung();
+</script>
+</body>
+</html>
